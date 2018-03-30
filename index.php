@@ -4,8 +4,6 @@
  *
  */
 
-require __DIR__.'/cloudinary/Cloudinary.php';
-require __DIR__.'/cloudinary/Api.php';
 require __DIR__.'/cloudinary/Settings.php';
 
 /**
