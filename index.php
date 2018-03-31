@@ -251,6 +251,8 @@ function print_single_directory() {
 
             $thumb_src = "http://res.cloudinary.com/verywood/image/upload/c_fill,h_150,w_150/v1/photo_high_res/Blanc/Blanc_01";
 
+            $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";   
+
             $images_dir = __DIR__ . '/images';
 
             $root_folders = get_folders($images_dir);
@@ -272,10 +274,13 @@ function print_single_directory() {
                         // Print all subfolders with title and cover ?>
                         <ul class="folder-list">
                             <?php
-                            foreach ($folders as $folder) { ?>
+                            foreach ($folders as $folder) { 
+                                
+                                $current_dir_path = $images_dir . "/" . $root_folder ."/". $folder;
+                                ?>
                                 <li class="folder-item <?php echo $folder; ?>">
-                                    <img src="<?php echo $thumb_src; ?>" alt="<?php echo $folder; ?>" />
-                                    <a class="folder-title ajax-link" href="#!<?php echo $folder; ?>" data-parent="<?php echo $root_folder; ?>" data-folder="<?php echo $folder; ?>" >
+                                    <a class="folder-title ajax-link" href="#!<?php echo $folder; ?>" data-parent="<?php echo $folder; ?>" data-folder="<?php echo $current_dir_path; ?>" >
+                                        <img src="<?php echo $thumb_src; ?>" alt="<?php echo $folder; ?>" />
                                         <h3><?php echo $folder; ?></h3>
                                     </a>
                                 </li>
@@ -286,63 +291,59 @@ function print_single_directory() {
             <?php } ?>
         </div>
         
+                                <?php
 
+
+
+
+
+
+?>
 
         <script>
+
             /** 
              *  Insert content in overlay element and fadein it when images are loaded
              *  @param  folder (object)
              */
             function populateOverlay(folder, name){
+                // RICHIESTA AJAX PER SEARCH
+                $.ajax({
+                    url: './ajax-overlay.php',
 
-                // Empty ul element
-                $('#wk-overlay .image-list').empty();
-                var html_content = '';
-                var array_path;
-                var image_file_name;
-                var file_weight;
-                $('#wk-overlay .image-folder-title').html(folder);
-
-                images = get_files(folder);
-                // For each image in that folder creates html content
-                for(var images in image) {
-
-                    array_path = folder.images[image].public_id.split("/");
-                    image_file_name = (array_path[2] + "." + folder.images[image].format)
-                    if(image_file_name.length > 20){
-                        image_file_name = image_file_name.substring(0, 16) + " ...";
+                    type: 'post',
+                    data: {
+                        action: 'webkolm_ajax_populateOverlay',
+                        folder_path: folder
+                    },
+                    success: function( result ) {
+                    
+                        // SE LA RICERCA NON VA A BUON FINE
+                        if( result === 'error' ) {
+                            
+                        
+                        // SE LA RICERCA VA A BUON FINE
+                        } else {
+                           
+                            $('.image-folder-title').html(name);
+                            $('.image-list').html(result);
+                            $('#wk-overlay').fadeIn();
+                            
+                            /*
+                            //to change the browser URL to the given link location
+                            if(pageurl!=window.location){
+                                window.history.pushState({path:pageurl},'',pageurl);
+                            }
+                            */
+                        }
                     }
-                    
-                    file_weight = niceBytes(folder.images[image].bytes);
-                    
-
-                    html_content += 
-                        '<li class="image-item">' +
-                            '<div class="image-container"><img src="' + folder.images[image].cover + '" alt="' + folder.images[image].public_id + '" />' +
-                                '<div class="image-download">' +
-                                    '<a href="' + folder.images[image].url + '" download>' +
-                                    '<svg viewBox="29 29 142 141"><polygon points="146.7 113.3 146.7 140 53.3 140 53.3 113.3 33.3 113.3 33.3 140 33.3 166.7 53.3 166.7 146.7 166.7 166.7 166.7 166.7 140 166.7 113.3"/><polygon points="120 86 120 33.3 80 33.3 80 86 58.7 86 100 127.3 141.3 86"/></svg>' +
-                                    '<span class="image-weight">' + file_weight + '</span>' +
-                                    '</a>' + 
-                                '</div>' +
-                            '</div>' +
-                            '<h5 class="image-title">' + image_file_name + '</h5>' +
-                        '</li>';
-                }
-                
-                // Appends html content to ul element
-                $('#wk-overlay .image-list').append(html_content);
-                
-                // When the images are loaded, fadein overlay
-                $('.image-item img').load(function(evt){
-                    $('#wk-overlay').fadeIn();
                 });
+
             }
             
             
             const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
             function niceBytes(x){
-
                 let l = 0, n = parseInt(x, 10) || 0;
                 while(n >= 1024 && ++l)
                     n = n/1024;
@@ -357,7 +358,7 @@ function print_single_directory() {
                 var parent = $(this).attr('data-parent');
                 var folder = $(this).attr('data-folder');
                 
-                populateOverlay("<?php echo __DIR__; ?>/" + parent + "/" + folder, folder);
+                populateOverlay(folder, parent);
                 
             });
             
