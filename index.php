@@ -1,16 +1,7 @@
 <?php 
 
-
 //require __DIR__.'/assets/Settings.php';
 require __DIR__.'/assets/functions.php';
-
-//update_thumbs(__DIR__);
-
-global $current_dir;
-
-function print_single_directory() {
-
-}
 
 ?>
 <html>
@@ -277,10 +268,11 @@ function print_single_directory() {
                             foreach ($folders as $folder) { 
                                 
                                 $current_dir_path = $images_dir . "/" . $root_folder ."/". $folder;
+                                $current_thumb = $actual_link . "thumbs/" . $root_folder ."/". $folder . "/" . scandir($current_dir_path)[2];
                                 ?>
                                 <li class="folder-item <?php echo $folder; ?>">
                                     <a class="folder-title ajax-link" href="#!<?php echo $folder; ?>" data-parent="<?php echo $folder; ?>" data-folder="<?php echo $current_dir_path; ?>" >
-                                        <img src="<?php echo $thumb_src; ?>" alt="<?php echo $folder; ?>" />
+                                        <img src="<?php echo $current_thumb; ?>" alt="<?php echo $folder; ?>" />
                                         <h3><?php echo $folder; ?></h3>
                                     </a>
                                 </li>
@@ -291,15 +283,6 @@ function print_single_directory() {
             <?php } ?>
         </div>
         
-                                <?php
-
-
-
-
-
-
-?>
-
         <script>
 
             /** 
@@ -310,7 +293,6 @@ function print_single_directory() {
                 // RICHIESTA AJAX PER SEARCH
                 $.ajax({
                     url: './ajax-overlay.php',
-
                     type: 'post',
                     data: {
                         action: 'webkolm_ajax_populateOverlay',
@@ -341,25 +323,12 @@ function print_single_directory() {
 
             }
             
-            
-            const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-            function niceBytes(x){
-                let l = 0, n = parseInt(x, 10) || 0;
-                while(n >= 1024 && ++l)
-                    n = n/1024;
-
-                return(n.toFixed(n >= 10 || l < 1 ? 0 : 1) + ' ' + units[l]);
-            }
-
-
-
             // Listener for click in folder item event
             $('.folder-item a').on('click', function(){
                 var parent = $(this).attr('data-parent');
                 var folder = $(this).attr('data-folder');
                 
                 populateOverlay(folder, parent);
-                
             });
             
             // Listener for click in X event
