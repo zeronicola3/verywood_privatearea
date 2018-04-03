@@ -7,9 +7,14 @@ require __DIR__.'/assets/functions.php';
 <html>
     <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes ">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    
 
     <style>
+
+        .bloccosroll {
+            position: fixed;
+            overflow: hidden;
+        }
 
         body {
             width: 90%;
@@ -45,10 +50,80 @@ require __DIR__.'/assets/functions.php';
             overflow: auto;
         }
 
+        #wk-overlay .sk-cube-grid {
+            position: fixed;
+            top: 50vh;
+            left: 50vw;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+
+        .sk-cube-grid {
+            width: 80px;
+            height: 80px;
+        }
+
+        .sk-cube-grid .sk-cube {
+            width: 33%;
+            height: 33%;
+            background-color: #000;
+            float: left;
+            -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+                    animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; 
+        }
+            .sk-cube-grid .sk-cube1 {
+            -webkit-animation-delay: 0.2s;
+                    animation-delay: 0.2s; }
+            .sk-cube-grid .sk-cube2 {
+            -webkit-animation-delay: 0.3s;
+                    animation-delay: 0.3s; }
+            .sk-cube-grid .sk-cube3 {
+            -webkit-animation-delay: 0.4s;
+                    animation-delay: 0.4s; }
+            .sk-cube-grid .sk-cube4 {
+            -webkit-animation-delay: 0.1s;
+                    animation-delay: 0.1s; }
+            .sk-cube-grid .sk-cube5 {
+            -webkit-animation-delay: 0.2s;
+                    animation-delay: 0.2s; }
+            .sk-cube-grid .sk-cube6 {
+            -webkit-animation-delay: 0.3s;
+                    animation-delay: 0.3s; }
+            .sk-cube-grid .sk-cube7 {
+            -webkit-animation-delay: 0s;
+                    animation-delay: 0s; }
+            .sk-cube-grid .sk-cube8 {
+            -webkit-animation-delay: 0.1s;
+                    animation-delay: 0.1s; }
+            .sk-cube-grid .sk-cube9 {
+            -webkit-animation-delay: 0.2s;
+                    animation-delay: 0.2s; }
+
+            @-webkit-keyframes sk-cubeGridScaleDelay {
+            0%, 70%, 100% {
+                -webkit-transform: scale3D(1, 1, 1);
+                        transform: scale3D(1, 1, 1);
+            } 35% {
+                -webkit-transform: scale3D(0, 0, 1);
+                        transform: scale3D(0, 0, 1); 
+            }
+            }
+
+            @keyframes sk-cubeGridScaleDelay {
+            0%, 70%, 100% {
+                -webkit-transform: scale3D(1, 1, 1);
+                        transform: scale3D(1, 1, 1);
+            } 35% {
+                -webkit-transform: scale3D(0, 0, 1);
+                        transform: scale3D(0, 0, 1);
+            } 
+            }
+
         #wk-overlay .close-overlay {
             position: absolute;
             top: 10px;
             right: 15px;
+            cursor: pointer;
         }
 
         #wk-overlay .close-overlay svg {
@@ -62,6 +137,7 @@ require __DIR__.'/assets/functions.php';
             margin: 0;
             text-align: left;
             font-size: 14px;
+            display:none;
         }
 
 
@@ -78,6 +154,7 @@ require __DIR__.'/assets/functions.php';
         ul.image-list {
             width: 90%;
             margin: 20px auto;
+            display:none;
         }
 
         li.folder-item {
@@ -86,10 +163,20 @@ require __DIR__.'/assets/functions.php';
             padding-left: 15px;
             padding-right: 15px;
             cursor: pointer;
+            
+        }
+
+
+        
+        li.folder-item:hover a img, li.folder-item:hover a h5 {
+            opacity: .5;
+            transition: opacity .2s;
         }
 
         .folder-item a img {
             width: 100%;
+             background-color: #f1f1f1;
+             transition: opacity .2s;
         }
 
         .folder-item a h5 {
@@ -97,6 +184,8 @@ require __DIR__.'/assets/functions.php';
             margin-bottom: 15px;
             font-size: 16px;
             font-weight: 400;
+            transition: opacity .2s;
+            color: #000;
         }
 
         li.image-item {
@@ -174,9 +263,68 @@ require __DIR__.'/assets/functions.php';
 
         .image-item a h5 {
             max-width: 100%;
+            color: #000;
         }
 
+        h5.image-title {
+           word-wrap: break-word;
+           color: #000;
+        }
+
+
+        a.folder-title.ajax-link {
+            color: black;
+            text-decoration: none;
+        }
+
+        
+        .files-list {
+            list-style-type: none;
+            padding-left: 15px;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            display: block;
+            position: relative;
+            flex-wrap: wrap;
+        }
+        
+        .files-list .file-item {
+            width: 100%;
+            display: inline-block;
+            padding-right: 20px;
+            word-wrap: break-word;
+            color: #000;
+            
+        }  
+
+        .files-list .file-item a h5 {
+            position: relative;
+            width: 100%;
+            margin: .7em 0;
+            color: black;
+            transition: opacity .2s;
+            text-decoration: none;
+        }
+
+        .files-list .file-item a:hover h5 {
+            opacity: .5;
+             transition: opacity .2s;
+        }
+
+        .files-list .file-item a {
+            display: inline-block;
+            text-decoration: none;
+        }
+
+
+
         @media screen and (min-width: 768px) {
+
+            .sk-cube-grid .sk-cube {
+                background-color: #fff;
+            }
+
             #wk-overlay {
                 width: 100%;
                 height: 100%;
@@ -211,10 +359,20 @@ require __DIR__.'/assets/functions.php';
                 background-color: white;
                 /* display: inline-block; */
             }
+
+            .files-list .file-item {
+                width: 45%;
+            }
+
+            .folder-item a img {
+                height: 150px;
+            }
         }
 
         @media screen and (min-width: 1000px) {
-
+            .files-list .file-item {
+                width: 30%;
+            }
         }
         
         
@@ -230,6 +388,17 @@ require __DIR__.'/assets/functions.php';
                     </g>
                 </svg>
             </a>
+            <div class="sk-cube-grid">
+                <div class="sk-cube sk-cube1"></div>
+                <div class="sk-cube sk-cube2"></div>
+                <div class="sk-cube sk-cube3"></div>
+                <div class="sk-cube sk-cube4"></div>
+                <div class="sk-cube sk-cube5"></div>
+                <div class="sk-cube sk-cube6"></div>
+                <div class="sk-cube sk-cube7"></div>
+                <div class="sk-cube sk-cube8"></div>
+                <div class="sk-cube sk-cube9"></div>
+            </div>
             <h2 class="image-folder-title"></h2>
             <ul class="image-list"></ul>
         </div>
@@ -268,7 +437,7 @@ require __DIR__.'/assets/functions.php';
                             foreach ($folders as $folder) { 
                                 
                                 $current_dir_path = $images_dir . "/" . $root_folder ."/". $folder;
-                                $current_thumb = $actual_link . "thumbs/" . $root_folder ."/". $folder . "/" . scandir($current_dir_path)[2];
+                                $current_thumb = get_thumb_uri( $root_folder ."/". $folder,scandir($current_dir_path)[2]);
                                 ?>
                                 <li class="folder-item <?php echo $folder; ?>">
                                     <a class="folder-title ajax-link" href="#!<?php echo $folder; ?>" data-parent="<?php echo $folder; ?>" data-folder="<?php echo $current_dir_path; ?>" >
@@ -280,9 +449,17 @@ require __DIR__.'/assets/functions.php';
                         </ul>
                     <?php } // END IF ?>
                 </div>
-            <?php } ?>
+            <?php } 
+            
+            print_noimages_folders('documents');
+            print_noimages_folders('2d');
+            print_noimages_folders('3d');
+            
+            
+            
+            ?>
         </div>
-        
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script>
 
             /** 
@@ -309,7 +486,9 @@ require __DIR__.'/assets/functions.php';
                            
                             $('.image-folder-title').html(name);
                             $('.image-list').html(result);
-                            $('#wk-overlay').fadeIn();
+                            $('.sk-cube-grid').fadeOut();
+                            $('#wk-overlay .image-list, #wk-overlay h2').fadeIn();
+                            $('#wk-overlay .image-list').css({display: 'flex'});
                             
                             /*
                             //to change the browser URL to the given link location
@@ -325,6 +504,9 @@ require __DIR__.'/assets/functions.php';
             
             // Listener for click in folder item event
             $('.folder-item a').on('click', function(){
+                $('html').addClass('bloccosroll');
+                $('#wk-overlay').fadeIn();
+                $('.sk-cube-grid').fadeIn();
                 var parent = $(this).attr('data-parent');
                 var folder = $(this).attr('data-folder');
                 
@@ -335,6 +517,7 @@ require __DIR__.'/assets/functions.php';
             $('#wk-overlay .close-overlay').on('click', function(){
                 $('#wk-overlay .image-list').empty();
                 $('#wk-overlay').fadeOut();
+                $('html').removeClass('bloccosroll');
             });
 
         </script>
